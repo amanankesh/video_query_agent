@@ -17,14 +17,14 @@ CREATE TABLE IF NOT EXISTS {table} (
     processed_output TEXT DEFAULT NULL,
 
     download_time REAL,
-    inference_time REAL,
     db_insertion_time REAL,
-
-    character_detection_time REAL,
     shot_detection_time REAL,
-    shot_description_time REAL,
-    scene_detection_time REAL,
-    scene_description_time REAL,
+
+    character_detection_stats JSONB,
+    inference_stats JSONB,
+    shot_description_stats JSONB,
+    scene_detection_stats JSONB,
+    scene_description_stats JSONB,
 
     infer_logs JSONB,
     status TEXT CHECK (status IN ('pending', 'in_progress', 'done', 'failed')) DEFAULT 'pending',

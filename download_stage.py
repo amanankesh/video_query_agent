@@ -1,6 +1,6 @@
 import os
 import time
-from utils.download import download_s3_file, download_local_file
+from utils.download import download_local_file
 
 from utils.job_queue import update_job_stage, fetch_next_job, mark_job_failed
 from config import LOCAL_VIDEO_DIR, SLEEP_DURATION, DEBUG_MODE, SCENE_THRESHOLD, CHUNK_DURATION
@@ -36,9 +36,9 @@ while True:
                 ### these two functions can be run parallelly
                 start = time.time()
                 split_video(local_path, local_dir, split_duration=CHUNK_DURATION)
-                spliting_time = time.time() - start
+                start = time.time()
                 detect_and_split_shots(video_path=local_path, threshold=SCENE_THRESHOLD)
-                shot_detection_time = time.time() - spliting_time
+                shot_detection_time = time.time() - start
             else:
                 print("\nlocal_path : ", local_path,"\n")
                 raise ValueError("Download returned no local_path")

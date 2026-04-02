@@ -1,22 +1,57 @@
-# OS / IDE files
+# OS / IDE
 .DS_Store
 Thumbs.db
 .vscode/
 .idea/
+*.swp
+*~
 
 # Python
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+env/
+ENV/
+*.egg
+*.egg-info/
+.eggs/
+pip-wheel-metadata/
+
+# Env & secrets
 .env
+.env.*
+!.env.example
+
+# Testing / typing / linters
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.tox/
+.hypothesis/
+
+# Jupyter
+.ipynb_checkpoints/
 
 # Logs
 logs/
 *.log
 
-# Build / Cache
+# Build / dist
 build/
 dist/
-*.egg-info/
+*.manifest
+
+# Project: large local media & scratch (keep tracked paths explicit in git when needed)
+media_files/
+jobs_old/
+output/
+volumes/
 
 # Images
 *.jpg
@@ -52,12 +87,9 @@ dist/
 *.srt
 *.vtt
 
-# Big datasets
+# Archives / datasets
 *.zip
 *.tar
 *.tar.gz
 *.rar
 *.7z
-
-output/
-volumes/

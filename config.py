@@ -4,12 +4,14 @@ LOCATION="us-central1"
 MODEL="gemini-2.5-flash"
 TEMPERATURE=0.5
 EMBEDDING_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
+# Milvus audio collections in this project are built with 768-dim mpnet embeddings (see utils/aud_db_utils.py).
+QUERY_EMBEDDING_MODEL = "sentence-transformers/all-mpnet-base-v2"
 LOCAL_VIDEO_DIR = "/Users/amana1/working_dir/videos"
 LOCAL_PROCESSING_DIR = "/Users/amana1/working_dir/Meta_Extraction/out"
 MAX_WORKERS = 10
-
+LOG_DIR = "/Users/amana1/working_dir/Meta_Extraction/Logs"
 PROMPT_TEMPLATES_DIR = "/Users/amana1/working_dir/Meta_Extraction/prompts"
-DEBUG_MODE = True
+DEBUG_MODE = False
 
 #character detection params
 RESIZE_WIDTH = 640
@@ -29,7 +31,7 @@ PASSWORD="postgres"
 HOST="localhost"
 PORT="5432"
 
-PIPELINE_TABLE = "pipeline_jobs"
+PIPELINE_TABLE = "pipeline_jobs_table"
 
 VIDEO_TABLE = "video_meta"
 AUDIO_TABLE = "audio_meta"

@@ -29,24 +29,24 @@ while True:
         new_job = files[-1]
 
         if new_job != old_job:
-            print("Enqueing:", new_job)
+            print("Enqueuing:", new_job)
             df = pd.read_excel(new_job, sheet_name='enqueue')
             old_job = files[-1]
             data = list(df.itertuples(index=False, name=None))
 
-            execute_values(cursor, f"INSERT INTO {table} \
-                                     (stage, priority, s3_key, filename, config) VALUES %s \
-                                     ON CONFLICT (s3_key) DO UPDATE SET \
-                                        priority = EXCLUDED.priority", data)
-                                        
-            conn.commit()
+            if data:
+                execute_values(cursor, f"INSERT INTO {table} \
+                                         (stage, priority, s3_key, filename, config) VALUES %s \
+                                         ON CONFLICT (s3_key) DO UPDATE SET \
+                                            priority = EXCLUDED.priority", data)
+                conn.commit()
             old_job = new_job
 
         cursor.close()
 
-    if debug:
-        print("Exiting due to debug mode")
-        break
+        if debug:
+            print("Exiting due to debug mode")
+            break
 
-    print("Sleeping for 3 mins")
+    print(f"enqueue_stage : sleeping for {sleep_time} seconds")
     time.sleep(sleep_time)

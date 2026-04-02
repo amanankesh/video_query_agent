@@ -1,10 +1,11 @@
 import os
 import json
 import time
-from utils.job_queue import *
+from utils.job_queue import fetch_next_job, update_job_stage, mark_job_failed
 from utils.inference import get_meta_data
 from utils.aud_db_utils import get_pg_conn
 from utils.json_to_excel import merge_prompt3_prompt4, merge_prompt1_prompt2
+
 from config import (
     SLEEP_DURATION, CHUNK_DURATION, 
     DEBUG_MODE, PROMPT_TEMPLATES_DIR, 
@@ -28,9 +29,10 @@ args = {
 }
 
 status = "pending"
-while True:
-    job = fetch_next_job(conn, 'inference', status=status) # if fetched then status="in_progress"
 
+while True:
+
+    job = fetch_next_job(conn, 'inference', status=status)
     if job:
         try:
             start = time.time()
@@ -39,32 +41,27 @@ while True:
             video_name = os.path.splitext(os.path.basename(local_path))[0]
             combined = os.path.join(dir_path, video_name)
 
-            if os.path.exists(os.path.join(combined, "prompt1")):
-                print("Skipping ...")
-                update_job_stage(conn, job['id'], 'shot_description', new_status="failed")
-                continue
-            
             args['output_dir'] = combined
-            print("Inference args : ", args)
-            
-            get_meta_data(args)
+            usage_stats = get_meta_data(args)
             merge_prompt1_prompt2(combined)
             merge_prompt3_prompt4(combined)
-            inference_time = time.time() - start
-            print("Inference time:", inference_time)
 
+            inference_time = time.time() - start
+            usage_stats["inference_time"] = f"{inference_time:0.2f}"
+            usage_stats["model"] = MODEL
+            usage_stats["temperature"] = TEMPERATURE
             update_job_stage(
                 conn,
                 job['id'],
                 'shot_description',
                 new_status='pending',
                 addons=[
-                    f"inference_time = {inference_time:0.2f}"
+                    f"inference_stats = '{json.dumps(usage_stats)}'::jsonb"
                 ]
             )
-
+            print("Inference time:", inference_time)
         except Exception as e:
-            print(f"Job failed: {str(e)}")
+            print(f"Inference failed: {str(e)}")
             mark_job_failed(conn, job['id'])
 
         if debug:
