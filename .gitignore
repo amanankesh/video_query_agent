@@ -52,6 +52,8 @@ media_files/
 jobs_old/
 output/
 volumes/
+macos/
+macOS/
 
 # Images
 *.jpg
